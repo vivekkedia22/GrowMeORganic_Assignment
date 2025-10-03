@@ -20,9 +20,6 @@ function AssignmentPage() {
     const pagesToCheck = updatedPagesToVisit || pagesToVisit;
 
     const remainingRows = currentRows - (currentPage - 1) * 12;
-    console.log("remaining rows", remainingRows);
-    console.log("current page", currentPage);
-    console.log("pages to visit", pagesToCheck);
     if (
       remainingRows <= 0 || (
       pagesToCheck.length === 0 ||
