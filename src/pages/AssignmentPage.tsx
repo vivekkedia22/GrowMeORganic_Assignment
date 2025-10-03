@@ -13,19 +13,33 @@ function AssignmentPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProducts, setSelectedProducts] = useState<DataType[]>([]);
   const [noOfRowsToSelect, setNoOfRowsToSelect] = useState("");
-  const [nextSelectedPage, setNextSelectedPage] = useState(1);
+  const [pagesToVisit, setPagesToVisit] = useState<number[]>([]);
 
-  const handleFilter = () => {
-    if (nextSelectedPage < currentPage || !noOfRowsToSelect) {
+  const handleFilter = (updatedPagesToVisit?: number[]) => {
+    const currentRows = parseInt(noOfRowsToSelect);
+    const pagesToCheck = updatedPagesToVisit || pagesToVisit;
+
+    const remainingRows = currentRows - (currentPage - 1) * 12;
+    console.log("remaining rows", remainingRows);
+    console.log("current page", currentPage);
+    console.log("pages to visit", pagesToCheck);
+    if (
+      remainingRows <= 0 || (
+      pagesToCheck.length === 0 ||
+      !pagesToCheck.includes(currentPage) )||
+      !noOfRowsToSelect
+    ) {
       return;
     }
-    const currentRows = parseInt(noOfRowsToSelect);
 
-    const remainingRows = currentRows - 12;
-    setNextSelectedPage(currentPage + 1);
-    setNoOfRowsToSelect(remainingRows < 0 ? "0" : remainingRows.toString());
+    // setNextSelectedPage(currentPage + 1);
+    // visitedPages.add(currentPage);
+    setPagesToVisit((prevPages) => {
+      const copy = prevPages.filter((page) => page !== currentPage);
+      return copy;
+    });
     const selectedRows = Array.from(
-      { length: parseInt(noOfRowsToSelect) },
+      { length: remainingRows },
       (_, index) => index
     );
     setSelectedProducts((prevSelected) => {
@@ -57,6 +71,8 @@ function AssignmentPage() {
   useEffect(() => {
     handleFilter();
   }, [currentPage]);
+
+
   const onPageChange = async (e: PaginatorPageChangeEvent) => {
     const res = await fetchData(e.page + 1);
     setCurrentPage(e.page + 1);
@@ -67,12 +83,13 @@ function AssignmentPage() {
     <div style={{ padding: "20px" }}>
       <ArtworkTable
         data={data}
+        setPagesToVisit={setPagesToVisit}
         selectedProducts={selectedProducts}
         onSelectionChange={(e) => setSelectedProducts(e.value)}
         formatTitle={formatTitle}
         noOfRowsToSelect={noOfRowsToSelect}
         setNoOfRowsToSelect={setNoOfRowsToSelect}
-        handleSubmit={handleFilter}
+        handleSubmit={(updatedPages) => handleFilter(updatedPages)}
       />
       <CustomPaginator
         first={first}

@@ -6,11 +6,13 @@ import { Button } from "primereact/button";
 interface TitleHeaderProps {
   noOfRowsToSelect: string;
   setNoOfRowsToSelect: (value: string) => void;
-  handleSubmit: () => void;
+  setPagesToVisit: (value: number[]) => void;
+  handleSubmit: (updatedPages?: number[]) => void;
 }
 
 export const TitleHeader = ({
   noOfRowsToSelect,
+  setPagesToVisit,
   setNoOfRowsToSelect,
   handleSubmit,
 }: TitleHeaderProps) => {
@@ -50,7 +52,13 @@ export const TitleHeader = ({
           <Button
             label="Submit"
             onClick={() => {
-              handleSubmit();
+              const pagesToVisit = Array.from(
+                { length: Math.ceil(parseInt(noOfRowsToSelect) / 12) },
+                (_, index) => index + 1
+              );
+
+              setPagesToVisit(pagesToVisit);
+              handleSubmit(pagesToVisit);
               overlayRef.current?.hide();
             }}
             size="small"

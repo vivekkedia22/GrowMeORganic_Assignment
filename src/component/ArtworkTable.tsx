@@ -9,6 +9,7 @@ import { TitleHeader } from "./TitleHeader";
 interface ArtworkTableProps {
   data: DataType[];
   selectedProducts: DataType[];
+  setPagesToVisit: (value: number[]) => void;
   onSelectionChange: (
     e: DataTableSelectionMultipleChangeEvent<DataType[]>
   ) => void;
@@ -21,12 +22,27 @@ interface ArtworkTableProps {
 export const ArtworkTable = ({
   data,
   selectedProducts,
+  setPagesToVisit,
   onSelectionChange,
   formatTitle,
   noOfRowsToSelect,
   setNoOfRowsToSelect,
   handleSubmit,
 }: ArtworkTableProps) => {
+  const extractDateFromArtist = (artistDisplay: string, isStart: boolean) => {
+    const match = artistDisplay.match(/(\d{4})-(\d{4})/);
+    if (match) {
+      return isStart ? match[1] : match[2];
+    }
+    const singleMatch = artistDisplay.match(/(\d{4})/);
+    return singleMatch ? singleMatch[1] : "";
+  };
+
+  const getDisplayDate = (rowData: DataType, isStart: boolean) => {
+    const dateValue = isStart ? rowData.date_start : rowData.date_end;
+    if (dateValue) return dateValue.toString();
+    return extractDateFromArtist(rowData.artist_display, isStart);
+  };
   return (
     <DataTable
       value={data}
@@ -79,6 +95,7 @@ export const ArtworkTable = ({
         header={
           <TitleHeader
             noOfRowsToSelect={noOfRowsToSelect}
+            setPagesToVisit={setPagesToVisit}
             setNoOfRowsToSelect={setNoOfRowsToSelect}
             handleSubmit={handleSubmit}
           />
@@ -125,6 +142,7 @@ export const ArtworkTable = ({
       <Column
         field="date_start"
         header="Date Start"
+        body={(rowData) => getDisplayDate(rowData, true)}
         style={{ width: "10%" }}
         headerStyle={{
           padding: "12px",
@@ -139,6 +157,7 @@ export const ArtworkTable = ({
       <Column
         field="date_end"
         header="Date End"
+        body={(rowData) => getDisplayDate(rowData, false)}
         style={{ width: "10%" }}
         headerStyle={{
           padding: "12px",
