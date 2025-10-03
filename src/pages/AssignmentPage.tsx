@@ -13,19 +13,22 @@ function AssignmentPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProducts, setSelectedProducts] = useState<DataType[]>([]);
   const [noOfRowsToSelect, setNoOfRowsToSelect] = useState("");
-  // const [nextSelectedPage, setNextSelectedPage] = useState(1);
+  const [nextSelectedPage, setNextSelectedPage] = useState(1);
 
   const handleFilter = () => {
-    // if (nextSelectedPage < currentPage || !noOfRowsToSelect) {
-    //   return;
-    // }
     const currentRows = parseInt(noOfRowsToSelect);
 
     const remainingRows = currentRows - (currentPage - 1) * 12;
     console.log("Remaining rows ", remainingRows);
+    if (
+      (nextSelectedPage < currentPage && remainingRows <= 0) ||
+      !noOfRowsToSelect
+    ) {
+      return;
+    }
     if (remainingRows <= 0) return;
-    // setNextSelectedPage(currentPage + 1);
-    // setNoOfRowsToSelect(remainingRows < 0 ? "0" : remainingRows.toString());
+    setNextSelectedPage(currentPage + 1);
+    setNoOfRowsToSelect(remainingRows < 0 ? "0" : remainingRows.toString());
     const selectedRows = Array.from(
       { length: remainingRows },
       (_, index) => index
