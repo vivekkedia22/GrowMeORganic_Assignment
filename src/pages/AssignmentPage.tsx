@@ -16,21 +16,16 @@ function AssignmentPage() {
   const [nextSelectedPage, setNextSelectedPage] = useState(1);
 
   const handleFilter = () => {
-    const currentRows = parseInt(noOfRowsToSelect);
-
-    const remainingRows = currentRows - (currentPage - 1) * 12;
-    console.log("Remaining rows ", remainingRows);
-    if (
-      (nextSelectedPage < currentPage && remainingRows <= 0) ||
-      !noOfRowsToSelect
-    ) {
+    if (nextSelectedPage < currentPage || !noOfRowsToSelect) {
       return;
     }
-    if (remainingRows <= 0) return;
+    const currentRows = parseInt(noOfRowsToSelect);
+
+    const remainingRows = currentRows - 12;
     setNextSelectedPage(currentPage + 1);
     setNoOfRowsToSelect(remainingRows < 0 ? "0" : remainingRows.toString());
     const selectedRows = Array.from(
-      { length: remainingRows },
+      { length: parseInt(noOfRowsToSelect) },
       (_, index) => index
     );
     setSelectedProducts((prevSelected) => {
