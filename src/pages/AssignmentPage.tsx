@@ -89,7 +89,7 @@ function AssignmentPage() {
         formatTitle={formatTitle}
         noOfRowsToSelect={noOfRowsToSelect}
         setNoOfRowsToSelect={setNoOfRowsToSelect}
-        handleSubmit={(updatedPages) => handleFilter(updatedPages)}
+        handleSubmit={(updatedPages?: number[]) => handleFilter(updatedPages)}
       />
       <CustomPaginator
         first={first}
